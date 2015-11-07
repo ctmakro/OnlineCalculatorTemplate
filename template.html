@@ -1,0 +1,122 @@
+<!--
+
+by Qin Yongliang
+-->
+<p id="input_section" help="put this line anywhere you want to display input fields"></p>
+<p id="output_section" help="put this line anywhere you want to display output result"></p>
+
+<script type="text/javascript">
+
+var context = "input_section";
+
+function geid(id){
+  //helper
+  return document.getElementById(id);
+}
+function append(toappend){
+  //append text to intput_section
+  geid(context).innerHTML += toappend;
+  return toappend;
+}
+function clr(){geid(context).innerHTML="";}
+
+function parambox(param){
+  //create an inputbox for the parameter
+  append(param.explain+": ");
+  append("<input type=\"text\" name=\""+param.name+"\" value=\""+param.fillvalue+"\" id=\""+param.name+"\" onchange=\"refresh()\">");
+  append(" "+param.unit);
+  append("<br>");
+}
+
+function g(param){
+  //get the parameter specified, from its inputbox
+  var a = geid(param.name).value;
+  return a;
+}
+
+function r(result){
+  //get the result specified, by calculating it
+  return result.formula();
+}
+
+function resultget(result){
+  //display a label for the result.
+  append(result.explain+" = "+result.formula().toFixed(result.precision));
+  append(" "+result.unit);
+  append("<br>");
+}
+
+function endl(){append("<br>");}
+
+
+//
+var u1 = {
+  name:  "u1",
+  explain:    "Voltage",
+  fillvalue:  "5.0",
+  unit: "Volt(s)"
+}; //v1 is a parameter object
+
+var i1 = {
+  name: "i1",
+  explain: "Current",
+  fillvalue: "9.0",
+  unit: "Amp(s)"
+};
+
+var t1 = {
+  name: "t1",
+  explain: "Time",
+  fillvalue: "3.4892",
+  unit: "Second(s)"
+};
+
+var p1 = {
+  name:"p1",
+  explain:"Power",
+  formula:function(){
+    return g(i1)*g(u1);
+  },
+  unit:"Watt(s)",
+  precision:3 //3 digit beyond dot
+};//p1 is a result object
+
+var w1 = {
+  name:"w1",
+  explain:"Work",
+  formula:function(){
+    return r(p1)*g(t1);
+  },
+  unit:"Joule(s)",
+  precision:4 //4 digit beyond dot
+};//w1 is a result object
+
+function display_input_fields(){
+  context="input_section";
+  append("Online Calculator for Power and Work")
+  endl();
+  append("Designed by Qin Yongliang, available on GitHub as \"OnlineCalculatorTemplate\"");
+  endl();
+  endl();//CrLf
+  parambox(u1); //generate input fields for each of the parameters.
+  parambox(i1);
+  parambox(t1);
+  endl();
+}
+
+function refresh(){
+  //calculate everything, write to output_section
+  context="output_section";
+  clr();//delete all previously written content, if any exists.
+  resultget(p1);//generate output strings for each of the results.
+  resultget(w1);
+}
+
+display_input_fields();
+refresh();
+
+//render complete.
+//when any of the fields changes, triggered by pressing tab or enter,
+//refresh() will execute and redo the calculation.
+
+</script>
