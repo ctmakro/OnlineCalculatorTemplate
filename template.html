@@ -48,34 +48,55 @@ function resultget(result){
 
 function endl(){append("<br>");}
 
+var input=
+[//input variables
+  {
+    "name" :"u1",
+    explain:"Voltage",
+    fillvalue:  "5.0",
+    unit: "Volt(s)"
+  },
+  {
+    name: "i1",
+    explain: "Current",
+    fillvalue: "9.0",
+    unit: "Amp(s)"
+  },
+  {
+    name: "t1",
+    explain: "Time",
+    fillvalue: "3.4892",
+    unit: "Second(s)"
+  }
+];
 
-//
-var u1 = {
-  name:  "u1",
-  explain:    "Voltage",
-  fillvalue:  "5.0",
-  unit: "Volt(s)"
-}; //v1 is a parameter object
-
-var i1 = {
-  name: "i1",
-  explain: "Current",
-  fillvalue: "9.0",
-  unit: "Amp(s)"
-};
-
-var t1 = {
-  name: "t1",
-  explain: "Time",
-  fillvalue: "3.4892",
-  unit: "Second(s)"
-};
+var result=
+[
+  {
+    name:"p1",
+    explain:"Power",
+    formula:function(){
+      return g(i1)*g(u1);
+    },
+    unit:"Watt(s)",
+    precision:3 //3 digit beyond dot
+  },
+  {
+    name:"w1",
+    explain:"Work",
+    formula:function(){
+      return r(p1)*g(t1);
+    },
+    unit:"Joule(s)",
+    precision:4 //4 digit beyond dot
+  }
+];
 
 var p1 = {
   name:"p1",
   explain:"Power",
   formula:function(){
-    return g(i1)*g(u1);
+    return g(input[0])*g(input[1]);
   },
   unit:"Watt(s)",
   precision:3 //3 digit beyond dot
@@ -85,7 +106,7 @@ var w1 = {
   name:"w1",
   explain:"Work",
   formula:function(){
-    return r(p1)*g(t1);
+    return r(p1)*g(input[2]);
   },
   unit:"Joule(s)",
   precision:4 //4 digit beyond dot
@@ -98,9 +119,11 @@ function display_input_fields(){
   append("Designed by Qin Yongliang, available on GitHub as \"OnlineCalculatorTemplate\"");
   endl();
   endl();//CrLf
-  parambox(u1); //generate input fields for each of the parameters.
-  parambox(i1);
-  parambox(t1);
+   //generate input fields for each of the parameters.
+   for(var i=0;i<input.length;i++){
+     parambox(input[i]);
+     //eval("var "+input[i].name+" =0;");
+   }
   endl();
 }
 
