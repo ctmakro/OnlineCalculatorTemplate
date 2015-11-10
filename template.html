@@ -7,8 +7,8 @@ by Qin Yongliang
 <p id="input_section" help="put this line anywhere you want to display input fields"></p>
 <p id="output_section" help="put this line anywhere you want to display output result"></p>
 
-<script src="calculator1.js">
-//replace with your calculator js file.
+<script src="calculator2.js">
+//replace above with your own calculator js file.
 </script>
 
 <script>
@@ -63,34 +63,34 @@ function endl(){append("<br>");}
 
 function init_input_fields(){
   context="input_section";
-  append("Online Calculator for Power and Work");
+  append(calculator_variables.introduction);
   endl();
-  append("Designed by Qin Yongliang, available on GitHub as \"OnlineCalculatorTemplate\"");
+  append(calculator_variables.author);
   endl();
   endl();//CrLf
   //generate input fields for each of the parameters.
-  for(var i=0;i<variables.input.length;i++){
-    paramfield(variables.input[i]);
+  for(var i=0;i<calculator_variables.input.length;i++){
+    paramfield(calculator_variables.input[i]);
   }
   endl();
 
   //generate global variables for each of the results
-  for(var i=0;i<variables.result.length;i++){
-    generate(variables.result[i].vname);
+  for(var i=0;i<calculator_variables.result.length;i++){
+    generate(calculator_variables.result[i].vname);
   }
 }
 
 function refresh(){
-  for(var i=0;i<variables.input.length;i++){
-    eval(variables.input[i].vname+"= g(variables.input[i]);");//get inputs from their fields
+  for(var i=0;i<calculator_variables.input.length;i++){
+    eval(calculator_variables.input[i].vname+"= g(calculator_variables.input[i]);");//get inputs from their fields
   }
 
   //calculate everything, write to output_section
   context="output_section";
   clr();//delete all previously written content, if any exists.
 
-  for(var i=0;i<variables.result.length;i++){
-    resultget(variables.result[i]);
+  for(var i=0;i<calculator_variables.result.length;i++){
+    resultget(calculator_variables.result[i]);
   }
   //generate output strings for each of the results.
 }
