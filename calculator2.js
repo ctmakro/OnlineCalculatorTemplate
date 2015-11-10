@@ -4,45 +4,63 @@ var calculator_variables=
   [
     //input variables
     {
-      vname :"u1",
-      explain:"Voltage",
-      fillvalue:  "5.0",
-      unit: "Volt(s)"
+      vname :"s1",
+      explain:"Current Density(normally 2-5)",
+      fillvalue:  "3.0",
+      unit: "A/mm^2"
     },
     {
-      vname: "i1",
-      explain: "Current",
-      fillvalue: "9.0",
+      vname: "irms",
+      explain: "RMS Current",
+      fillvalue: "10.0",
       unit: "Amp(s)"
     },
     {
-      vname: "t1",
-      explain: "Time",
-      fillvalue: "3.4892",
-      unit: "Second(s)"
-    }
+      vname: "length1",
+      explain: "Wire Length",
+      fillvalue: "200",
+      unit: "mm"
+    },
   ],
   result:
   [
     {
-      vname:"p1",
-      explain:"Power",
+      vname:"a1",
+      explain:"Wire Cross Sectional Area",
       formula:function(){
-        return i1*u1;
+        return irms/s1;
       },
-      unit:"Watt(s)",
-      precision:3 //3 digit beyond dot
+      unit:"mm^2",
+      precision:3 //2 digit beyond dot
     },
     {
-      vname:"w1",
-      explain:"Work",
+      vname:"d1",
+      explain:"Wire Diameter",
       formula:function(){
-        return p1*t1;
+        return Math.sqrt(4*a1/3.141592653);
       },
-      unit:"Joule(s)",
-      precision:4 //4 digit beyond dot
+      unit:"mm",
+      precision:2 //2 digit beyond dot
+    },
+    {
+      vname:"r1",
+      explain:"Resistance(Cu)",
+      formula:function(){
+        return length1*1.68e-8/a1/10e-6;
+      },
+      unit:"Ohm",
+      precision:4 //2 digit beyond dot
+    },
+    {
+      vname:"p1",
+      explain:"Dissipated Resistive Power",
+      formula:function(){
+        return r1*irms*irms;
+      },
+      unit:"Watt(s)",
+      precision:3 //4 digit beyond dot
     }
   ],
-  introduction: "Online Calculator for Power and Work",
+  introduction: "Online Calculator for HF Transformer Wire Selection",
   author:"Designed by Qin Yongliang, available on GitHub as \"OnlineCalculatorTemplate\""
 };
