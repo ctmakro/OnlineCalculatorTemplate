@@ -20,99 +20,42 @@ function append(toappend){
 }
 function clr(){geid(context).innerHTML="";}
 
-function parambox(param){
-  //create an inputbox for the parameter
+function paramfield(param){
+  //create an input field for the parameter
   append(param.explain+": ");
-  append("<input type=\"text\" name=\""+param.name+"\" value=\""+param.fillvalue+"\" id=\""+param.name+"\" onchange=\"refresh()\">");
+  append("<input type=\"text\" name=\""+param.vname+"\" value=\""+param.fillvalue+"\" id=\""+param.vname+"\" onchange=\"refresh()\">");
   append(" "+param.unit);
   append("<br>");
+
+  //generate a global variable whose name = param.vname
+  generate(param.vname);
 }
 
 function g(param){
-  //get the parameter specified, from its inputbox
-  var a = geid(param.name).value;
+  //get the parameter specified, from its inputfield
+  var a = geid(param.vname).value;
   return a;
 }
 
-function r(result){
-  //get the result specified, by calculating it
-  return result.formula();
-}
-
 function resultget(result){
-  //display a label for the result.
-  append(result.explain+" = "+result.formula().toFixed(result.precision));
+  //print a line for the result.
+  var a=result.formula();
+  append(result.explain+" = "+a.toFixed(result.precision));
   append(" "+result.unit);
   append("<br>");
+
+  //assign the result to its representative global variable.
+  eval(result.vname+" = a;")
+}
+
+function generate(varname){
+  //generate global variables by name.
+  window.eval("var "+varname+"=0;");
 }
 
 function endl(){append("<br>");}
 
-var input=
-[//input variables
-  {
-    "name" :"u1",
-    explain:"Voltage",
-    fillvalue:  "5.0",
-    unit: "Volt(s)"
-  },
-  {
-    name: "i1",
-    explain: "Current",
-    fillvalue: "9.0",
-    unit: "Amp(s)"
-  },
-  {
-    name: "t1",
-    explain: "Time",
-    fillvalue: "3.4892",
-    unit: "Second(s)"
-  }
-];
-
-var result=
-[
-  {
-    name:"p1",
-    explain:"Power",
-    formula:function(){
-      return g(i1)*g(u1);
-    },
-    unit:"Watt(s)",
-    precision:3 //3 digit beyond dot
-  },
-  {
-    name:"w1",
-    explain:"Work",
-    formula:function(){
-      return r(p1)*g(t1);
-    },
-    unit:"Joule(s)",
-    precision:4 //4 digit beyond dot
-  }
-];
-
-var p1 = {
-  name:"p1",
-  explain:"Power",
-  formula:function(){
-    return g(input[0])*g(input[1]);
-  },
-  unit:"Watt(s)",
-  precision:3 //3 digit beyond dot
-};//p1 is a result object
-
-var w1 = {
-  name:"w1",
-  explain:"Work",
-  formula:function(){
-    return r(p1)*g(input[2]);
-  },
-  unit:"Joule(s)",
-  precision:4 //4 digit beyond dot
-};//w1 is a result object
-
-function display_input_fields(){
+function init_input_fields(){
   context="input_section";
   append("Online Calculator for Power and Work");
   endl();
@@ -120,24 +63,94 @@ function display_input_fields(){
   endl();
   endl();//CrLf
    //generate input fields for each of the parameters.
-   for(var i=0;i<input.length;i++){
-     parambox(input[i]);
-     //eval("var "+input[i].name+" =0;");
+   for(var i=0;i<variables.input.length;i++){
+     paramfield(variables.input[i]);
    }
   endl();
+
+  //generate global variables for each of the results
+  for(var i=0;i<variables.result.length;i++){
+    generate(variables.result[i].vname);
+  }
 }
 
 function refresh(){
+  for(var i=0;i<variables.input.length;i++){
+    eval(variables.input[i].vname+"= g(variables.input[i]);");//get inputs from their fields
+  }
+
   //calculate everything, write to output_section
   context="output_section";
   clr();//delete all previously written content, if any exists.
-  resultget(p1);//generate output strings for each of the results.
-  resultget(w1);
+
+  for(var i=0;i<variables.result.length;i++){
+    resultget(variables.result[i]);
+  }
+  //generate output strings for each of the results.
 }
 
-display_input_fields();
-refresh();
+function fire(){
+try
+  {
+    init_input_fields();
+    refresh();
+  }
+catch(err)
+{
+  var txt="";
+  txt="###There was an error on this page.\n\n";
+  txt+="Error description: " + err.message + "\n\n";
+  append(txt);
+}
+}
 
+var variables={
+  input:  [
+    //input variables
+  {
+    vname :"u1",
+    explain:"Voltage",
+    fillvalue:  "5.0",
+    unit: "Volt(s)"
+  },
+  {
+    vname: "i1",
+    explain: "Current",
+    fillvalue: "9.0",
+    unit: "Amp(s)"
+  },
+  {
+    vname: "t1",
+    explain: "Time",
+    fillvalue: "3.4892",
+    unit: "Second(s)"
+  }
+],
+
+result:
+[
+  {
+    vname:"p1",
+    explain:"Power",
+    formula:function(){
+      return i1*u1;
+    },
+    unit:"Watt(s)",
+    precision:3 //3 digit beyond dot
+  },
+  {
+    vname:"w1",
+    explain:"Work",
+    formula:function(){
+      return p1*t1;
+    },
+    unit:"Joule(s)",
+    precision:4 //4 digit beyond dot
+  }
+]
+};
+
+fire();
 //render complete.
 //when any of the fields changes, triggered by pressing tab or enter,
 //refresh() will execute and redo the calculation.
