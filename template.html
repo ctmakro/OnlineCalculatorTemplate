@@ -1,23 +1,30 @@
 <!--
 
 by Qin Yongliang
+
 -->
+
 <p id="input_section" help="put this line anywhere you want to display input fields"></p>
 <p id="output_section" help="put this line anywhere you want to display output result"></p>
 
-<script type="text/javascript">
+<script src="calculator1.js">
+//replace with your calculator js file.
+</script>
 
+<script>
 var context = "input_section";
 
 function geid(id){
   //helper
   return document.getElementById(id);
 }
+
 function append(toappend){
   //append text to intput_section
   geid(context).innerHTML += toappend;
   return toappend;
 }
+
 function clr(){geid(context).innerHTML="";}
 
 function paramfield(param){
@@ -33,8 +40,7 @@ function paramfield(param){
 
 function g(param){
   //get the parameter specified, from its inputfield
-  var a = geid(param.vname).value;
-  return a;
+  return geid(param.vname).value;
 }
 
 function resultget(result){
@@ -62,10 +68,10 @@ function init_input_fields(){
   append("Designed by Qin Yongliang, available on GitHub as \"OnlineCalculatorTemplate\"");
   endl();
   endl();//CrLf
-   //generate input fields for each of the parameters.
-   for(var i=0;i<variables.input.length;i++){
-     paramfield(variables.input[i]);
-   }
+  //generate input fields for each of the parameters.
+  for(var i=0;i<variables.input.length;i++){
+    paramfield(variables.input[i]);
+  }
   endl();
 
   //generate global variables for each of the results
@@ -90,67 +96,23 @@ function refresh(){
 }
 
 function fire(){
-try
+  try
   {
     init_input_fields();
     refresh();
   }
-catch(err)
-{
-  var txt="";
-  txt="###There was an error on this page.\n\n";
-  txt+="Error description: " + err.message + "\n\n";
-  append(txt);
-}
-}
-
-var variables={
-  input:  [
-    //input variables
+  catch(err)
   {
-    vname :"u1",
-    explain:"Voltage",
-    fillvalue:  "5.0",
-    unit: "Volt(s)"
-  },
-  {
-    vname: "i1",
-    explain: "Current",
-    fillvalue: "9.0",
-    unit: "Amp(s)"
-  },
-  {
-    vname: "t1",
-    explain: "Time",
-    fillvalue: "3.4892",
-    unit: "Second(s)"
+    var txt="";
+    txt="###There was an error on this page.\n\n";
+    txt+="Error description: " + err.message + "\n\n";
+    context="output_section";
+    append(txt);
   }
-],
-
-result:
-[
-  {
-    vname:"p1",
-    explain:"Power",
-    formula:function(){
-      return i1*u1;
-    },
-    unit:"Watt(s)",
-    precision:3 //3 digit beyond dot
-  },
-  {
-    vname:"w1",
-    explain:"Work",
-    formula:function(){
-      return p1*t1;
-    },
-    unit:"Joule(s)",
-    precision:4 //4 digit beyond dot
-  }
-]
-};
+}
 
 fire();
+
 //render complete.
 //when any of the fields changes, triggered by pressing tab or enter,
 //refresh() will execute and redo the calculation.
