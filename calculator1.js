@@ -24,6 +24,7 @@ var calculator_variables=
   ],
   result:
   [
+  //places displaying result
     {
       vname:"p1",
       explain:"Power",
